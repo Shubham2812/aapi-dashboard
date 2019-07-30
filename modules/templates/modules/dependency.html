@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> AAPI Dashboard </title>
+    {% load static %}
+	 <script type="text/javascript" src="{% static 'modules/main.js' %}"></script>
+	 <link rel="stylesheet" type="text/css" href="{% static 'modules/main.css' %}">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" integrity="sha256-JuQeAGbk9rG/EoRMixuy5X8syzICcvB0dj3KindZkY0=" crossorigin="anonymous"></script>
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" integrity="sha256-iq5ygGJ7021Pi7H5S+QAUXCPUfaBzfqeplbg/KlEssg=" crossorigin="anonymous" />
+</head>
+<body>
+
+    <div class="nav-container">
+        {{ attribute|json_script:"attribute" }}
+        <h1> Attribute - {{attribute.name}} </h1>
+        <div><a class="button" href="{% url 'module' module_id %}"> Back </a></div>
+    </div>
+    <hr>
+
+    <div class="nav-container">
+        <h2> Dependencies </h2>
+        <div id="loader1"></div>
+    </div>
+
+    {% if dcs_from.path|length == 0 %}
+        <div> No Dependencies to Show. </div>
+    {% else %}
+        {{ dcs_from|json_script:"dcs-from-data" }}
+        <div id="dependency-graph">
+            {% if dcs_from.isComplex %}
+                <button class="button"> Load Graph </button>
+            {% endif %}
+        </div>
+
+        <div class="dc-container">
+            {% if dcs_from.path|length == 1 %}
+                <h3> {{ dcs_from.path|length }} Dependency Tree from Attribute <b>{{attribute.name}}</b> is </h3>
+            {% else %}
+                <h3> {{ dcs_from.path|length }} Dependency Trees from Attribute <b>{{attribute.name}}</b> are </h3>
+            {% endif %}
+            {% for dc in dcs_from.path %}
+            <div class="dc">
+                {% if dc|length > 0 %}
+                    <span class="button-dc corner-element-dc"> {{attribute.name}} </span> -->
+                {% endif %}
+                {% for i in dc %}
+                    <span class="button-dc"><a class="link" href="{% url 'dependency' i %}"> {{ i }} </a></span>
+                    {% if not forloop.last %}
+                         -->
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+         <div class="dc-container">
+             {% if dcs_from.unique|length == 1 %}
+                <h3> {{ dcs_from.unique|length }} Unique Dependency from Attribute <b>{{attribute.name}}</b> is </h3>
+             {% else %}
+                <h3> {{ dcs_from.unique|length }} Unique Dependencies from Attribute <b>{{attribute.name}}</b> are </h3>
+             {% endif %}
+             <div class="dc">
+             {% for dc in dcs_from.unique %}
+                 <span class="button-dc"><a class="link" href="{% url 'dependency' dc %}"> {{ dc }} </a></span>
+             {% endfor %}
+             </div>
+         </div>
+    {% endif %}
+
+    <div class="nav-container">
+        <h2> Dependents </h2>
+        <div id="loader2"></div>
+    </div>
+
+    {% if dcs_to.path|length == 0 %}
+        <div> No Dependents to Show. </div>
+    {% else %}
+        {{ dcs_to|json_script:"dcs-to-data" }}
+         <div id="dependent-graph">
+             {% if dcs_to.isComplex %}
+                {{sdfsdf}}
+                <button class="button dependent-graph-loader" id="{{attribute.id}}"> Load Graph </button>
+            {% endif %}
+         </div>
+
+        <div class="dc-container">
+            {% if dcs_to.path|length == 1 %}
+                <h3> {{ dcs_to.path|length }} Dependent Tree of Attribute <b>{{attribute.name}}</b> is </h3>
+             {% else %}
+                <h3> {{ dcs_to.path|length }} Dependent Trees of Attribute <b>{{attribute.name}}</b> are </h3>
+             {% endif %}
+            {% for dc in dcs_to.path %}
+            <div class="dc">
+                {% for i in dc %}
+                    <span class="button-dc"><a class="link" href="{% url 'dependency' i %}"> {{ i }} </a></span> -->
+                {% endfor %}
+                {% if dc|length > 0 %}
+                    <span class="button-dc corner-element-dc"> {{attribute.name}} </span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="dc-container">
+            {% if dcs_to.unique|length == 1 %}
+                <h3> {{ dcs_to.unique|length }} Unique Dependent of Attribute <b>{{attribute.name}}</b> is </h3>
+             {% else %}
+                <h3> {{ dcs_to.unique|length }} Unique Dependents of Attribute <b>{{attribute.name}}</b> are </h3>
+             {% endif %}
+            <div class="dc">
+            {% for dc in dcs_to.unique %}
+                <span class="button-dc"><a class="link" href="{% url 'dependency' dc %}"> {{ dc }} </a></span>
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+</body>
+</html>

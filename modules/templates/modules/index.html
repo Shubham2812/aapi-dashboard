@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> AAPI Dashboard </title>
+	{% load static %}
+	<script src="{% static 'modules/main.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'modules/main.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.5.0"></script>
+</head>
+<body>
+	{{ stats|json_script:"pie-chart-data" }}
+	<div class="nav-container">
+		<h1> AAPI Migration Dashboard </h1>
+		<div><a class="button" href="https://w.amazon.com/bin/view/RCX/Buying_Experience/DPX/AAPI_Dashboard/"><b>About</b></a></div>
+	</div>
+	<hr>
+
+	<h2> Statistics </h2>
+	<div class="flexible">
+		<table id="stats-list">
+			<thead>
+				<tr>
+					<th class="stats-list-th"> Data Repository </th> <th class="stats-list-th"> Count of Attributes calling that Repository </th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for key, value in stats.items %}
+					<tr>
+						<td class="stats-list-td">{{ key }}</td>
+						<td class="stats-list-td">{{ value }}</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<td class="stats-list-td bold"> Total </td>
+					<td class="stats-list-td bold"> {{ total_mod_count }} </td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="canvas-container"><canvas id="stats_pie_chart"></canvas></div>
+	</div>
+
+
+	<h2> List of Modules </h2>
+	<table id="modules-list">
+		<thead>
+			<tr>
+				<th class="modules-list-th"> S. No. </th>
+				<th class="modules-list-th"> Module Name </th>
+				<th class="modules-list-th"> No. of Attributes </th>
+			</tr>
+		</thead>
+		<tbody id="modules-list-body">
+			{% for row in modules %}
+				<tr class="modules-list-tr">
+					<td class="modules-list-td"> {{ forloop.counter }} </td>
+					<td class="modules-list-td"> <a class="link" href="{% url 'module' row.id %}"> {{ row.name|slice:":50" }} </a></td>
+					<td class="modules-list-td"> {{ row.attr_count }} </td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</body>
+</html>

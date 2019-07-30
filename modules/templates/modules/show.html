@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> AAPI Dashboard </title>
+    {% load static %}
+	 <script type="text/javascript" src="{% static 'modules/main.js' %}"></script>
+	 <link rel="stylesheet" type="text/css" href="{% static 'modules/main.css' %}">
+</head>
+<body>
+    <div class="nav-container">
+        <h2> Module - {{module.name}} </h2>
+        <div><a class="button" href="{% url 'index' %}"> Back </a></div>
+    </div>
+    <table id="attr-list">
+        <thead>
+            <tr>
+                <th class="attr-list-th">S. No. </th>
+                <th class="attr-list-th">Attribute Name</th>
+                <th class="attr-list-th">Data Repository</th>
+                <th class="attr-list-th">Dependencies</th>
+                <th class="attr-list-th">Dependents</th>
+                <th class="attr-list-th">CTI</th>
+                <th class="attr-list-th">Java Class</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attr in attributes %}
+                <tr>
+                    <td class="attr-list-td">{{ forloop.counter }}</td>
+                    <td class="attr-list-td"> <a class="link" href="{% url 'dependency' attr.id %}">{{attr.name}} </a> </td>
+                    <td class="attr-list-td">{{attr.data_repo}}</td>
+                    <td class="attr-list-td">{{attr.num_dependencies}}</td>
+                    <td class="attr-list-td">{{attr.num_dependents}}</td>
+                    <td class="attr-list-td"> {% for item in attr.cti %} {{item}}, {% endfor %} </td>
+                    <td class="attr-list-td break">{{attr.java_class}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
